@@ -35,7 +35,7 @@
 
             <div class="mb-3">
                 <label class="form-label fw-bold">Ảnh đại diện hiện tại</label>
-                <br>
+                <br>    
                 @if($course->image)
                     <img src="{{ asset('storage/' . $course->image) }}" width="150" class="img-thumbnail mb-2">
                 @else

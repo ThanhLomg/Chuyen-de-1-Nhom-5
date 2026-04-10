@@ -1,6 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CourseController;
+use App\Http\Controllers\DashboardController;
 
-Route::resource('courses', CourseController::class);
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
