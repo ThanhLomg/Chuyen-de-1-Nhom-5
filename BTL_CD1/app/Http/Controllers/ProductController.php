@@ -20,14 +20,12 @@ class ProductController extends Controller
         // Tìm kiếm theo từ khóa
         if ($request->filled('q')) {
             $q = $request->q;
-            $query->where(function ($q2) use ($q) {
-                $q2->where('name', 'like', "%{$q}%")
-                    ->orWhere('description', 'like', "%{$q}%")
-                    ->orWhere('short_description', 'like', "%{$q}%");
-            });
+            $query->where(fn($q2) => $q2->where('name','like',"%{$q}%")
+                ->orWhere('description','like',"%{$q}%")
+                ->orWhere('short_description','like',"%{$q}%"));
         }
 
-        // Lọc theo danh mục (slug)
+        // Lọc theo danh mục
         if ($request->filled('category')) {
             $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
         }
@@ -40,39 +38,36 @@ class ProductController extends Controller
             $query->where('price', '<=', $request->max_price);
         }
 
-        // Lọc theo màu sắc, chất liệu
+        // Lọc theo màu sắc (mảng)
         if ($request->filled('color')) {
-            $query->where('color', $request->color);
-        }
-        if ($request->filled('material')) {
-            $query->where('material', $request->material);
+            $query->whereIn('color', (array) $request->color);
         }
 
-        // Chỉ hiển thị còn hàng
+        // Lọc theo chất liệu (mảng)
+        if ($request->filled('material')) {
+            $query->whereIn('material', (array) $request->material);
+        }
+
+        // Chỉ còn hàng
         if ($request->filled('in_stock')) {
             $query->inStock();
         }
 
         // Sắp xếp
-        $sort = $request->input('sort');
-        $query->when($sort, function ($q, $sort) {
-            return match ($sort) {
-                'price_asc'  => $q->orderBy('price'),
-                'price_desc' => $q->orderByDesc('price'),
-                'name_asc'   => $q->orderBy('name'),
-                'popular'    => $q->orderByDesc('views'),
-                default      => $q->latest(),
-            };
-        }, function ($q) {
-            return $q->latest();
-        });
+        $query->when($request->sort, fn($q, $sort) => match($sort) {
+            'price_asc'  => $q->orderBy('price'),
+            'price_desc' => $q->orderByDesc('price'),
+            'name_asc'   => $q->orderBy('name'),
+            'popular'    => $q->orderByDesc('views'),
+            default      => $q->latest(),
+        }, fn($q) => $q->latest());
 
-        $products = $query->paginate(12)->withQueryString();
+        $products   = $query->paginate(12)->withQueryString();
         $categories = Category::active()->withCount('products')->get();
-        $colors = Product::active()->distinct()->pluck('color')->filter()->sort()->values();
-        $materials = Product::active()->distinct()->pluck('material')->filter()->sort()->values();
+        $colors     = Product::active()->distinct()->pluck('color')->filter()->sort()->values();
+        $materials  = Product::active()->distinct()->pluck('material')->filter()->sort()->values();
 
-        return view('products.index', compact('products', 'categories', 'colors', 'materials'));
+        return view('products.index', compact('products','categories','colors','materials'));
     }
 
     /**

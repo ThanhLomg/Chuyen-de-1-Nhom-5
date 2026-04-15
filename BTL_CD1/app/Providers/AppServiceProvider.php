@@ -2,12 +2,20 @@
 
 namespace App\Providers;
 
+use App\Services\CartService;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Services\CartService;
 
 class AppServiceProvider extends ServiceProvider
 {
+    /**
+     * Đường dẫn mặc định sau khi đăng nhập
+     */
+    public const HOME = '/';
+
+    /**
+     * Register any application services.
+     */
     public function register(): void
     {
         $this->app->singleton(CartService::class, function ($app) {
@@ -15,8 +23,12 @@ class AppServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Bootstrap any application services.
+     */
     public function boot(): void
     {
+        // Chia sẻ biến $cartCount cho tất cả view
         View::composer('*', function ($view) {
             if (auth()->check()) {
                 $cart = app(CartService::class);

@@ -9,167 +9,273 @@
 
 @section('content')
 <div class="bg-white rounded-lg shadow-sm p-6">
-    <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data" x-data="productEditForm({{ json_encode($product->gallery ?? []) }})">
+    <form action="{{ route('admin.products.update', $product) }}" method="POST" enctype="multipart/form-data" 
+          x-data="productEditForm({{ json_encode($product->gallery_urls ?? []) }}, {{ json_encode($product->gallery ?? []) }})">
         @csrf
         @method('PUT')
+
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {{-- Cột trái: Thông tin cơ bản --}}
             <div class="space-y-6">
+                {{-- Tên sản phẩm --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Tên sản phẩm <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" value="{{ old('name', $product->name) }}" class="w-full border-gray-300 rounded-md @error('name') border-red-500 @enderror">
-                    @error('name') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">
+                        Tên sản phẩm <span class="text-red-500">*</span>
+                    </label>
+                    <input type="text" name="name" id="name" value="{{ old('name', $product->name) }}"
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror">
+                    @error('name')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
+                {{-- Danh mục --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Danh mục <span class="text-red-500">*</span></label>
-                    <select name="category_id" class="w-full border-gray-300 rounded-md @error('category_id') border-red-500 @enderror">
+                    <label for="category_id" class="block text-sm font-medium text-gray-700 mb-1">
+                        Danh mục <span class="text-red-500">*</span>
+                    </label>
+                    <select name="category_id" id="category_id"
+                            class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('category_id') border-red-500 @enderror">
                         <option value="">-- Chọn danh mục --</option>
                         @foreach($categories as $cat)
-                            <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>{{ $cat->name }}</option>
+                            <option value="{{ $cat->id }}" {{ old('category_id', $product->category_id) == $cat->id ? 'selected' : '' }}>
+                                {{ $cat->name }}
+                            </option>
                         @endforeach
                     </select>
-                    @error('category_id') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    @error('category_id')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
+                {{-- Mô tả ngắn --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Mô tả ngắn</label>
-                    <textarea name="short_description" rows="2" class="w-full border-gray-300 rounded-md">{{ old('short_description', $product->short_description) }}</textarea>
+                    <label for="short_description" class="block text-sm font-medium text-gray-700 mb-1">
+                        Mô tả ngắn
+                    </label>
+                    <textarea name="short_description" id="short_description" rows="2"
+                              class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">{{ old('short_description', $product->short_description) }}</textarea>
+                    @error('short_description')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
+                {{-- Mô tả chi tiết --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Mô tả chi tiết <span class="text-red-500">*</span></label>
-                    <textarea name="description" rows="5" class="w-full border-gray-300 rounded-md @error('description') border-red-500 @enderror">{{ old('description', $product->description) }}</textarea>
-                    @error('description') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    <label for="description" class="block text-sm font-medium text-gray-700 mb-1">
+                        Mô tả chi tiết <span class="text-red-500">*</span>
+                    </label>
+                    <textarea name="description" id="description" rows="5"
+                              class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('description') border-red-500 @enderror">{{ old('description', $product->description) }}</textarea>
+                    @error('description')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
                 </div>
 
+                {{-- Giá & Giá khuyến mãi --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Giá gốc (VNĐ) <span class="text-red-500">*</span></label>
-                        <input type="number" name="price" value="{{ old('price', $product->price) }}" step="1000" min="1000" class="w-full border-gray-300 rounded-md @error('price') border-red-500 @enderror">
-                        @error('price') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                        <label for="price" class="block text-sm font-medium text-gray-700 mb-1">
+                            Giá gốc (VNĐ) <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" name="price" id="price" value="{{ old('price', $product->price) }}" step="1000" min="1000"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('price') border-red-500 @enderror">
+                        @error('price')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Giá khuyến mãi (VNĐ)</label>
-                        <input type="number" name="sale_price" value="{{ old('sale_price', $product->sale_price) }}" step="1000" min="1000" class="w-full border-gray-300 rounded-md">
+                        <label for="sale_price" class="block text-sm font-medium text-gray-700 mb-1">
+                            Giá khuyến mãi (VNĐ)
+                        </label>
+                        <input type="number" name="sale_price" id="sale_price" value="{{ old('sale_price', $product->sale_price) }}" step="1000" min="1000"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        @error('sale_price')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
                 </div>
 
+                {{-- Tồn kho & Chất liệu --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Tồn kho <span class="text-red-500">*</span></label>
-                        <input type="number" name="stock" value="{{ old('stock', $product->stock) }}" min="0" class="w-full border-gray-300 rounded-md">
+                        <label for="stock" class="block text-sm font-medium text-gray-700 mb-1">
+                            Tồn kho <span class="text-red-500">*</span>
+                        </label>
+                        <input type="number" name="stock" id="stock" value="{{ old('stock', $product->stock) }}" min="0"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        @error('stock')
+                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                        @enderror
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Chất liệu</label>
-                        <input type="text" name="material" value="{{ old('material', $product->material) }}" class="w-full border-gray-300 rounded-md">
+                        <label for="material" class="block text-sm font-medium text-gray-700 mb-1">
+                            Chất liệu
+                        </label>
+                        <input type="text" name="material" id="material" value="{{ old('material', $product->material) }}"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
 
+                {{-- Kích thước & Màu sắc --}}
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-sm font-medium mb-1">Kích thước</label>
-                        <input type="text" name="dimensions" value="{{ old('dimensions', $product->dimensions) }}" class="w-full border-gray-300 rounded-md">
+                        <label for="dimensions" class="block text-sm font-medium text-gray-700 mb-1">
+                            Kích thước
+                        </label>
+                        <input type="text" name="dimensions" id="dimensions" value="{{ old('dimensions', $product->dimensions) }}"
+                               placeholder="VD: 120x60x75 cm"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                     <div>
-                        <label class="block text-sm font-medium mb-1">Màu sắc</label>
-                        <input type="text" name="color" value="{{ old('color', $product->color) }}" class="w-full border-gray-300 rounded-md">
+                        <label for="color" class="block text-sm font-medium text-gray-700 mb-1">
+                            Màu sắc
+                        </label>
+                        <input type="text" name="color" id="color" value="{{ old('color', $product->color) }}"
+                               class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     </div>
                 </div>
 
+                {{-- Thương hiệu --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Thương hiệu</label>
-                    <input type="text" name="brand" value="{{ old('brand', $product->brand) }}" class="w-full border-gray-300 rounded-md">
+                    <label for="brand" class="block text-sm font-medium text-gray-700 mb-1">
+                        Thương hiệu
+                    </label>
+                    <input type="text" name="brand" id="brand" value="{{ old('brand', $product->brand) }}"
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                 </div>
 
+                {{-- Checkbox: Nổi bật & Hiển thị --}}
                 <div class="flex items-center gap-6">
                     <label class="flex items-center">
-                        <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }} class="rounded border-gray-300 text-primary">
-                        <span class="ml-2">Sản phẩm nổi bật</span>
+                        <input type="checkbox" name="is_featured" value="1" {{ old('is_featured', $product->is_featured) ? 'checked' : '' }}
+                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">Sản phẩm nổi bật</span>
                     </label>
                     <label class="flex items-center">
-                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }} class="rounded border-gray-300 text-primary">
-                        <span class="ml-2">Hiển thị</span>
+                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $product->is_active) ? 'checked' : '' }}
+                               class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
+                        <span class="ml-2 text-sm text-gray-700">Hiển thị</span>
                     </label>
                 </div>
             </div>
 
+            {{-- Cột phải: Ảnh --}}
             <div class="space-y-6">
+                {{-- Ảnh chính hiện tại --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Ảnh chính</label>
-                    @if($product->image)
-                        <div class="mb-2">
-                            <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="h-40 w-40 object-cover rounded border">
-                        </div>
-                    @endif
-                    <input type="file" name="image" accept="image/*" @change="previewMainImage" class="w-full border-gray-300 rounded-md">
-                    <div class="mt-2">
-                        <img x-ref="mainImagePreview" src="#" alt="Preview" class="h-40 w-40 object-cover rounded border hidden">
-                    </div>
-                    @error('image') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Ảnh chính hiện tại</label>
+                    <img src="{{ $product->image_url }}" class="h-40 w-40 object-cover rounded border mb-2">
                 </div>
 
+                {{-- Upload ảnh chính mới --}}
                 <div>
-                    <label class="block text-sm font-medium mb-1">Thư viện ảnh (tối đa 6 ảnh)</label>
-                    <input type="file" name="gallery[]" accept="image/*" multiple @change="addGalleryImages" class="w-full border-gray-300 rounded-md">
-                    <div class="mt-3 grid grid-cols-3 gap-2">
-                        <!-- Ảnh hiện có -->
-                        <template x-for="(image, index) in existingGallery" :key="'existing-' + index">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Thay đổi ảnh chính
+                    </label>
+                    <input type="file" name="image" accept="image/*" @change="previewMainImage"
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    @error('image')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    <div class="mt-3">
+                        <img x-ref="mainImagePreview" src="#" alt="Preview" class="h-40 w-40 object-cover rounded border hidden">
+                    </div>
+                </div>
+
+                {{-- Gallery hiện tại --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Thư viện ảnh hiện tại
+                    </label>
+                    <div class="grid grid-cols-3 gap-2">
+                        @foreach($product->gallery_urls as $index => $url)
                             <div class="relative">
-                                <img :src="image.url" class="h-24 w-full object-cover rounded border">
-                                <input type="hidden" name="remove_gallery[]" x-model="image.path" x-show="image.removed">
-                                <button type="button" @click="toggleRemoveExisting(index)" class="absolute -top-2 -right-2 rounded-full w-5 h-5 flex items-center justify-center text-xs" :class="image.removed ? 'bg-green-500 text-white' : 'bg-red-500 text-white'">
-                                    <span x-show="!image.removed">&times;</span>
-                                    <span x-show="image.removed">↻</span>
+                                <img src="{{ $url }}" class="h-24 w-full object-cover rounded border">
+                                <label class="absolute -top-2 -right-2 cursor-pointer">
+                                    <input type="checkbox" name="remove_gallery[]" value="{{ $product->gallery[$index] }}" class="sr-only peer">
+                                    <span class="bg-white border rounded-full w-5 h-5 flex items-center justify-center text-red-500 peer-checked:bg-red-500 peer-checked:text-white transition-colors">
+                                        &times;
+                                    </span>
+                                </label>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+
+                {{-- Upload thêm ảnh gallery --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Thêm ảnh mới (tối đa 6 ảnh tổng cộng)
+                    </label>
+                    <input type="file" name="gallery[]" accept="image/*" multiple @change="addGalleryImages"
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                    @error('gallery.*')
+                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                    @enderror
+                    
+                    <div class="mt-3 grid grid-cols-3 gap-2">
+                        <template x-for="(url, index) in galleryPreviews" :key="'new-'+index">
+                            <div class="relative">
+                                <img :src="url" class="h-24 w-full object-cover rounded border">
+                                <button type="button" @click="removeGalleryImage(index)"
+                                        class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs hover:bg-red-600">
+                                    &times;
                                 </button>
                             </div>
                         </template>
-                        <!-- Ảnh mới thêm -->
-                        <template x-for="(url, index) in newGalleryPreviews" :key="'new-' + index">
-                            <div class="relative">
-                                <img :src="url" class="h-24 w-full object-cover rounded border">
-                                <button type="button" @click="removeNewGalleryImage(index)" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">&times;</button>
-                            </div>
-                        </template>
                     </div>
-                    @error('gallery.*') <p class="text-red-500 text-sm mt-1">{{ $message }}</p> @enderror
+                    <p class="text-xs text-gray-500 mt-1">
+                        Tổng số ảnh: {{ count($product->gallery_urls) }} hiện tại + <span x-text="galleryPreviews.length"></span> mới
+                    </p>
                 </div>
             </div>
         </div>
 
+        {{-- Nút submit - ĐÃ SỬA MÀU --}}
         <div class="mt-8 flex justify-end gap-3">
-            <a href="{{ route('admin.products.index') }}" class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-gray-700 bg-white hover:bg-gray-50">Hủy</a>
-            <button type="submit" class="px-6 py-2 bg-primary text-white rounded-md shadow-sm hover:bg-primary-dark">Cập nhật sản phẩm</button>
+            <a href="{{ route('admin.products.index') }}"
+               class="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                Hủy
+            </a>
+            <button type="submit"
+                    class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-sm font-medium transition-colors">
+                Cập nhật sản phẩm
+            </button>
         </div>
     </form>
 </div>
 
 <script>
-    function productEditForm(existingGalleryPaths) {
+    function productEditForm(existingGalleryUrls, existingGalleryPaths) {
         return {
-            existingGallery: existingGalleryPaths.map(path => ({
-                path: path,
-                url: '{{ asset("storage") }}/' + path,
-                removed: false
-            })),
-            newGalleryPreviews: [],
+            galleryPreviews: [],
             previewMainImage(event) {
                 const file = event.target.files[0];
                 if (file) {
                     this.$refs.mainImagePreview.src = URL.createObjectURL(file);
                     this.$refs.mainImagePreview.classList.remove('hidden');
+                } else {
+                    this.$refs.mainImagePreview.src = '#';
+                    this.$refs.mainImagePreview.classList.add('hidden');
                 }
             },
             addGalleryImages(event) {
                 const files = Array.from(event.target.files);
-                files.forEach(file => {
-                    this.newGalleryPreviews.push(URL.createObjectURL(file));
+                const currentCount = existingGalleryUrls.length + this.galleryPreviews.length;
+                const remaining = 6 - currentCount;
+                const filesToAdd = files.slice(0, remaining);
+                
+                filesToAdd.forEach(file => {
+                    this.galleryPreviews.push(URL.createObjectURL(file));
                 });
+
+                if (files.length > remaining) {
+                    alert(`Tổng số ảnh gallery tối đa là 6. Đã bỏ qua ${files.length - remaining} ảnh.`);
+                }
             },
-            removeNewGalleryImage(index) {
-                this.newGalleryPreviews.splice(index, 1);
-            },
-            toggleRemoveExisting(index) {
-                this.existingGallery[index].removed = !this.existingGallery[index].removed;
+            removeGalleryImage(index) {
+                this.galleryPreviews.splice(index, 1);
             }
         }
     }

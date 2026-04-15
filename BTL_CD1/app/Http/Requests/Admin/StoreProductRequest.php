@@ -46,9 +46,7 @@ class StoreProductRequest extends FormRequest
             'stock.required' => 'Vui lòng nhập số lượng tồn kho.',
             'image.required' => 'Vui lòng chọn ảnh chính cho sản phẩm.',
             'image.image' => 'File phải là ảnh.',
-            'image.max' => 'Ảnh không được vượt quá 3MB.',
-            'gallery.*.image' => 'File trong thư viện phải là ảnh.',
-            'gallery.max' => 'Chỉ được tải tối đa 6 ảnh.',
+            'image.max' => 'Kích thước ảnh tối đa 3MB.',
         ];
     }
 }

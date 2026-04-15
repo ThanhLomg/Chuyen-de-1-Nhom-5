@@ -30,8 +30,6 @@ class UpdateProductRequest extends FormRequest
             'brand'             => 'nullable|string|max:100',
             'is_featured'       => 'boolean',
             'is_active'         => 'boolean',
-            'remove_gallery'    => 'nullable|array',
-            'remove_gallery.*'  => 'string',
         ];
     }
 

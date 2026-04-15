@@ -2,59 +2,57 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\View\View;
 
 class ProfileController extends Controller
 {
     /**
-     * Display the user's profile form.
+     * Hiển thị form chỉnh sửa thông tin cá nhân
      */
-    public function edit(Request $request): View
+    public function edit(): View
     {
-        return view('profile.edit', [
-            'user' => $request->user(),
+        return view('account.profile', [
+            'user' => auth()->user(),
         ]);
     }
 
     /**
-     * Update the user's profile information.
+     * Cập nhật thông tin cá nhân
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
+    public function update(Request $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+        $user = auth()->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        $validated = $request->validate([
+            'name'             => 'required|string|max:255',
+            'phone'            => 'nullable|regex:/^(0[3|5|7|8|9])+([0-9]{8})$/',
+            'address'          => 'nullable|string|max:255',
+            'current_password' => 'nullable|required_with:password|current_password',
+            'password'         => 'nullable|min:8|confirmed',
+        ], [
+            'phone.regex'                => 'Số điện thoại không hợp lệ (VD: 0912345678).',
+            'current_password.required_with' => 'Vui lòng nhập mật khẩu hiện tại để đổi mật khẩu.',
+            'current_password.current_password' => 'Mật khẩu hiện tại không chính xác.',
+            'password.min'               => 'Mật khẩu mới phải có ít nhất 8 ký tự.',
+            'password.confirmed'         => 'Xác nhận mật khẩu không khớp.',
+        ]);
+
+        // Cập nhật thông tin cơ bản
+        $user->name = $validated['name'];
+        $user->phone = $validated['phone'] ?? null;
+        $user->address = $validated['address'] ?? null;
+
+        // Nếu có nhập mật khẩu mới
+        if ($request->filled('password')) {
+            $user->password = Hash::make($validated['password']);
         }
 
-        $request->user()->save();
+        $user->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
-    }
-
-    /**
-     * Delete the user's account.
-     */
-    public function destroy(Request $request): RedirectResponse
-    {
-        $request->validateWithBag('userDeletion', [
-            'password' => ['required', 'current_password'],
-        ]);
-
-        $user = $request->user();
-
-        Auth::logout();
-
-        $user->delete();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return Redirect::to('/');
+        return redirect()->route('account.profile')
+            ->with('success', 'Thông tin tài khoản đã được cập nhật thành công.');
     }
 }
