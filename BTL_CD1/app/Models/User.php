@@ -46,6 +46,6 @@ class User extends Authenticatable
 
     public function getTotalSpentAttribute(): int
     {
-        return $this->orders()->where('status', 'delivered')->sum('total');
+        return $this->orders()->where('payment_status', 'paid')->sum('total');
     }
 }

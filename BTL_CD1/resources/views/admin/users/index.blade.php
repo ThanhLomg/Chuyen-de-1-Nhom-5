@@ -29,7 +29,7 @@
                     <option value="inactive" {{ request('status') === 'inactive' ? 'selected' : '' }}>Bị khóa</option>
                 </select>
             </div>
-            <button type="submit" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary-dark text-sm">
+            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm transition-colors">
                 Lọc
             </button>
             <a href="{{ route('admin.users.index') }}"
@@ -60,7 +60,7 @@
                     <td class="px-6 py-4">{{ $user->id }}</td>
                     <td class="px-6 py-4">
                         <div class="flex items-center gap-3">
-                            <div class="w-8 h-8 rounded-full bg-primary-light text-white flex items-center justify-center text-xs font-medium">
+                            <div class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-medium">
                                 {{ strtoupper(substr($user->name, 0, 1)) }}
                             </div>
                             <span class="font-medium">{{ $user->name }}</span>
@@ -69,7 +69,9 @@
                     <td class="px-6 py-4">{{ $user->email }}</td>
                     <td class="px-6 py-4">{{ $user->phone ?? '-' }}</td>
                     <td class="px-6 py-4">{{ $user->orders_count }}</td>
-                    <td class="px-6 py-4 font-medium">{{ number_format($user->total_spent, 0, ',', '.') }}đ</td>
+                    <td class="px-6 py-4 font-medium">
+                        {{ number_format($user->total_spent ?? 0, 0, ',', '.') }}đ
+                    </td>
                     <td class="px-6 py-4">
                         <span class="px-2 py-1 text-xs rounded-full {{ $user->is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                             {{ $user->is_active ? 'Hoạt động' : 'Bị khóa' }}
@@ -77,7 +79,7 @@
                     </td>
                     <td class="px-6 py-4 text-right space-x-2">
                         <a href="{{ route('admin.users.show', $user->id) }}"
-                           class="text-primary hover:underline">Xem</a>
+                           class="text-blue-600 hover:underline">Xem</a>
                         @if(!$user->is_admin)
                             <form action="{{ route('admin.users.toggleStatus', $user->id) }}" method="POST" class="inline">
                                 @csrf

@@ -15,7 +15,12 @@ class UserController extends Controller
      */
     public function index(Request $request): View
     {
-        $query = User::customers()->withCount('orders')->latest();
+        $query = User::customers()
+            ->withCount('orders')
+            ->withSum(['orders as total_spent' => function ($subQuery) {
+                $subQuery->where('payment_status', 'paid'); // hoặc where('status', 'delivered')
+            }], 'total')
+            ->latest();
 
         // Tìm kiếm
         if ($request->filled('search')) {
@@ -46,7 +51,10 @@ class UserController extends Controller
             $query->latest();
         }])->findOrFail($id);
 
-        return view('admin.users.show', compact('user'));
+        // Tổng chi tiêu của user (có thể dùng accessor hoặc tính riêng)
+        $totalSpent = $user->orders()->where('payment_status', 'paid')->sum('total');
+
+        return view('admin.users.show', compact('user', 'totalSpent'));
     }
 
     /**
