@@ -20,9 +20,9 @@ class ProductController extends Controller
         // Tìm kiếm theo từ khóa
         if ($request->filled('q')) {
             $q = $request->q;
-            $query->where(fn($q2) => $q2->where('name','like',"%{$q}%")
-                ->orWhere('description','like',"%{$q}%")
-                ->orWhere('short_description','like',"%{$q}%"));
+            $query->where(fn($q2) => $q2->where('name', 'like', "%{$q}%")
+                ->orWhere('description', 'like', "%{$q}%")
+                ->orWhere('short_description', 'like', "%{$q}%"));
         }
 
         // Lọc theo danh mục
@@ -40,17 +40,19 @@ class ProductController extends Controller
 
         // Lọc theo màu sắc (mảng)
         if ($request->filled('color')) {
-            $query->whereIn('color', (array) $request->color);
+            $colors = (array) $request->color;
+            $query->whereIn('color', $colors);
         }
 
         // Lọc theo chất liệu (mảng)
         if ($request->filled('material')) {
-            $query->whereIn('material', (array) $request->material);
+            $materials = (array) $request->material;
+            $query->whereIn('material', $materials);
         }
 
         // Chỉ còn hàng
         if ($request->filled('in_stock')) {
-            $query->inStock();
+            $query->where('stock', '>', 0);
         }
 
         // Sắp xếp
@@ -67,7 +69,7 @@ class ProductController extends Controller
         $colors     = Product::active()->distinct()->pluck('color')->filter()->sort()->values();
         $materials  = Product::active()->distinct()->pluck('material')->filter()->sort()->values();
 
-        return view('products.index', compact('products','categories','colors','materials'));
+        return view('products.index', compact('products', 'categories', 'colors', 'materials'));
     }
 
     /**

@@ -82,7 +82,7 @@
                         </label>
                     </div>
 
-                    <button type="submit" class="w-full bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-primary-dark transition-colors">
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium transition-colors">
                         Áp dụng bộ lọc
                     </button>
                     <a href="{{ route('products.index') }}" class="block text-center mt-2 text-sm text-gray-500 hover:text-primary">
