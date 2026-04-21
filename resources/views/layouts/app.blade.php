@@ -28,21 +28,24 @@
                 {{-- Desktop Navigation --}}
                 <nav class="hidden lg:flex items-center space-x-8">
                     <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Sản phẩm</a>
-                    <div class="relative" x-data="{ open: false }">
-                        <button @click="open = !open" class="text-gray-700 hover:text-blue-600 font-medium flex items-center transition-colors">
+                    
+                    <div class="relative group cursor-pointer py-4">
+                        <div class="flex items-center text-gray-700 hover:text-blue-600 font-medium transition-colors">
                             Danh mục
-                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                            <svg class="w-4 h-4 ml-1 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                             </svg>
-                        </button>
-                        <div x-show="open" @click.away="open = false" x-transition class="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-100">
-                            @foreach(\App\Models\Category::active()->get() as $cat)
-                                <a href="{{ route('categories.show', $cat->slug) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
-                                    {{ $cat->name }}
-                                </a>
-                            @endforeach
+                        </div>
+                        
+                        {{-- Dropdown content đã được sửa lỗi --}}
+                        <div class="absolute left-0 top-full w-48 bg-white border border-gray-100 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Bàn ăn</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Ghế Sofa</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Tủ quần áo</a>
+                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">Giường ngủ</a>
                         </div>
                     </div>
+
                     <a href="#" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Khuyến mãi</a>
                     <a href="#" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Liên hệ</a>
                 </nav>
@@ -62,7 +65,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                         </svg>
                         <span class="cart-count absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
-                            {{ $cartCount }}
+                            {{ $cartCount ?? 0 }}
                         </span>
                     </a>
 
@@ -77,7 +80,6 @@
                                 Đăng ký
                             </a>
                         </div>
-                        {{-- Mobile: icon user (tạm) hoặc để menu hamburger xử lý --}}
                     @endguest
 
                     @auth
