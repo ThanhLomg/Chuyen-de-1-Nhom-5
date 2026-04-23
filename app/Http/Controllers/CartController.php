@@ -13,15 +13,14 @@ class CartController extends Controller
     /**
      * Hiển thị trang giỏ hàng
      */
-    public function index(CartService $cart): View
-    {
-        $cartItems = $cart->get();
-        $subtotal  = $cart->subtotal();
-        $shipping  = 30000;
-        $total     = $subtotal + $shipping;
-
-        return view('cart.index', compact('cartItems', 'subtotal', 'shipping', 'total'));
-    }
+ public function index(CartService $cart): View
+{
+    $cartItems = $cart->get();
+    $subtotal  = $cart->subtotal();
+    $shipping  = $subtotal >= 500000 ? 0 : 30000;
+    $total     = $subtotal + $shipping;
+    return view('cart.index', compact('cartItems', 'subtotal', 'shipping', 'total'));
+}
 
     /**
      * Thêm sản phẩm vào giỏ (AJAX)

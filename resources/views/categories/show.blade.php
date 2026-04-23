@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8">
     {{-- Breadcrumb --}}
     <nav class="text-sm mb-6">
-        <a href="{{ route('home') }}" class="text-gray-500 hover:text-primary">Trang chủ</a>
+        <a href="{{ route('home') }}" class="text-gray-500 hover:text-blue-600">Trang chủ</a>
         <span class="mx-2 text-gray-400">/</span>
         <span class="text-gray-700">{{ $category->name }}</span>
     </nav>
@@ -19,9 +19,9 @@
         @endif
     </div>
 
-    {{-- Grid sản phẩm (tái sử dụng layout tương tự products index) --}}
+    {{-- Grid sản phẩm --}}
     <div class="flex flex-col lg:flex-row gap-8">
-        {{-- Sidebar Bộ lọc (giống products.index) --}}
+        {{-- Sidebar Bộ lọc --}}
         <aside class="lg:w-1/4">
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sticky top-24">
                 <h3 class="font-semibold text-lg mb-4">Bộ lọc</h3>
@@ -31,9 +31,9 @@
                         <label class="block text-sm font-medium mb-2">Khoảng giá</label>
                         <div class="flex gap-2">
                             <input type="number" name="min_price" placeholder="Từ" value="{{ request('min_price') }}"
-                                   class="w-1/2 border-gray-200 rounded-lg text-sm focus:ring-primary focus:border-primary">
+                                   class="w-1/2 border-gray-200 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
                             <input type="number" name="max_price" placeholder="Đến" value="{{ request('max_price') }}"
-                                   class="w-1/2 border-gray-200 rounded-lg text-sm focus:ring-primary focus:border-primary">
+                                   class="w-1/2 border-gray-200 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
                         </div>
                     </div>
 
@@ -46,7 +46,7 @@
                                 <label class="flex items-center text-sm">
                                     <input type="checkbox" name="color[]" value="{{ $color }}"
                                            {{ in_array($color, (array) request('color', [])) ? 'checked' : '' }}
-                                           class="rounded border-gray-300 text-primary focus:ring-primary">
+                                           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                     <span class="ml-2">{{ $color }}</span>
                                 </label>
                             @endforeach
@@ -63,7 +63,7 @@
                                 <label class="flex items-center text-sm">
                                     <input type="checkbox" name="material[]" value="{{ $material }}"
                                            {{ in_array($material, (array) request('material', [])) ? 'checked' : '' }}
-                                           class="rounded border-gray-300 text-primary focus:ring-primary">
+                                           class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                                     <span class="ml-2">{{ $material }}</span>
                                 </label>
                             @endforeach
@@ -75,15 +75,16 @@
                     <div class="mb-5">
                         <label class="flex items-center text-sm">
                             <input type="checkbox" name="in_stock" value="1" {{ request('in_stock') ? 'checked' : '' }}
-                                   class="rounded border-gray-300 text-primary focus:ring-primary">
+                                   class="rounded border-gray-300 text-blue-600 focus:ring-blue-500">
                             <span class="ml-2">Chỉ hiện sản phẩm còn hàng</span>
                         </label>
                     </div>
 
-                    <button type="submit" class="w-full bg-primary text-white py-2.5 rounded-lg font-medium hover:bg-primary-dark transition-colors">
+                    {{-- Nút sửa rõ ràng --}}
+                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-medium transition-colors shadow-sm">
                         Áp dụng
                     </button>
-                    <a href="{{ route('categories.show', $category->slug) }}" class="block text-center mt-2 text-sm text-gray-500 hover:text-primary">
+                    <a href="{{ route('categories.show', $category->slug) }}" class="block text-center mt-2 text-sm text-gray-500 hover:text-blue-600">
                         Xóa bộ lọc
                     </a>
                 </form>
@@ -96,7 +97,7 @@
                 <p class="text-gray-600">
                     <span class="font-medium">{{ $products->total() }}</span> sản phẩm
                 </p>
-                <select name="sort" form="filter-form" class="border-gray-200 rounded-lg text-sm focus:ring-primary focus:border-primary">
+                <select name="sort" form="filter-form" class="border-gray-200 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
                     <option value="">Mới nhất</option>
                     <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá tăng dần</option>
                     <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Giá giảm dần</option>

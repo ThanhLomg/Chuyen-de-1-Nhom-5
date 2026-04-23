@@ -28,25 +28,25 @@
                 {{-- Desktop Navigation --}}
                 <nav class="hidden lg:flex items-center space-x-8">
                     <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Sản phẩm</a>
-                    
-                    <div class="relative group cursor-pointer py-4">
-                        <div class="flex items-center text-gray-700 hover:text-blue-600 font-medium transition-colors">
+
+                    {{-- Dropdown Danh mục (Alpine) --}}
+                    <div class="relative" x-data="{ open: false }">
+                        <button @click="open = !open" class="text-gray-700 hover:text-blue-600 font-medium flex items-center transition-colors">
                             Danh mục
-                            <svg class="w-4 h-4 ml-1 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                            <svg class="ml-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
-                        </div>
-                        
-                        {{-- Dropdown content đã được sửa lỗi --}}
-                        <div class="absolute left-0 top-full w-48 bg-white border border-gray-100 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                            <a href="http://127.0.0.1:8000/products?category=ban&min_price=&max_price=&sort=" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Bàn</a>
-                            <a href="http://127.0.0.1:8000/products?category=ghe&min_price=&max_price=&sort=" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Các dòng Ghế</a>
-                            <a href="http://127.0.0.1:8000/products?category=tu-ke&min_price=&max_price=&sort=" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Tủ / Kệ</a>
-                            <a href="http://127.0.0.1:8000/products?category=phong-ngu&min_price=&max_price=&sort=" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">Phòng ngủ</a>
+                        </button>
+                        <div x-show="open" @click.away="open = false" x-transition class="absolute left-0 mt-2 w-56 bg-white rounded-lg shadow-lg py-2 z-50 border border-gray-100">
+                            @foreach(\App\Models\Category::active()->get() as $cat)
+                                <a href="{{ route('categories.show', $cat->slug) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 transition-colors">
+                                    {{ $cat->name }}
+                                </a>
+                            @endforeach
                         </div>
                     </div>
 
-                    <a href="http://127.0.0.1:8000/products" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Khuyến mãi</a>
+                    <a href="{{ route('products.index') }}" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Khuyến mãi</a>
                     <a href="#" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Liên hệ</a>
                 </nav>
 

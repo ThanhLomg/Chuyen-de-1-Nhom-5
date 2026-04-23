@@ -21,11 +21,12 @@ class CheckoutController extends Controller
                 ->with('error', 'Giỏ hàng trống. Vui lòng thêm sản phẩm trước khi thanh toán.');
         }
 
-        $cartItems = $cart->get();
-        $subtotal  = $cart->subtotal();
-        $shipping  = $subtotal >= 500000 ? 0 : 30000;
-        $total     = $subtotal + $shipping;
-        $user      = auth()->user();
+            $cartItems = $cart->get();
+            $subtotal  = $cart->subtotal();
+            $shipping  = $subtotal >= 500000 ? 0 : 30000;
+            $total     = $subtotal + $shipping;
+            $user      = auth()->user();
+    return view('checkout.index', compact('cartItems','subtotal','shipping','total','user'));
 
         return view('checkout.index', compact('cartItems', 'subtotal', 'shipping', 'total', 'user'));
     }

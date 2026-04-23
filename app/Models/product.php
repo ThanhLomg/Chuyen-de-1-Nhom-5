@@ -68,10 +68,10 @@ class Product extends Model
     }
 
     public function getDiscountPercentAttribute(): ?int
-    {
-        if (!$this->sale_price) return null;
-        return (int) round((($this->price - $this->sale_price) / $this->price) * 100);
-    }
+{
+    if (!$this->sale_price || $this->sale_price >= $this->price) return null;
+    return (int) round((($this->price - $this->sale_price) / $this->price) * 100);
+}
 
     public function getFormattedPriceAttribute(): string
     {

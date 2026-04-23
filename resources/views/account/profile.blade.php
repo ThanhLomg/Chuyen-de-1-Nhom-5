@@ -6,7 +6,7 @@
 <div class="container mx-auto px-4 py-8 max-w-2xl">
     <h1 class="text-2xl font-bold mb-6">Thông tin tài khoản</h1>
 
-    <div class="bg-white rounded-lg shadow-sm p-6">
+    <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
         <form method="POST" action="{{ route('account.profile.update') }}">
             @csrf
             @method('PATCH')
@@ -19,7 +19,7 @@
                     </label>
                     <input type="text" name="name" id="name"
                            value="{{ old('name', $user->name) }}"
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary @error('name') border-red-500 @enderror">
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('name') border-red-500 @enderror">
                     @error('name')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -41,7 +41,7 @@
                     <input type="tel" name="phone" id="phone"
                            value="{{ old('phone', $user->phone) }}"
                            placeholder="VD: 0912345678"
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary @error('phone') border-red-500 @enderror">
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('phone') border-red-500 @enderror">
                     @error('phone')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -53,7 +53,7 @@
                     </label>
                     <input type="text" name="address" id="address"
                            value="{{ old('address', $user->address) }}"
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary @error('address') border-red-500 @enderror">
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('address') border-red-500 @enderror">
                     @error('address')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -72,7 +72,7 @@
                         Mật khẩu hiện tại
                     </label>
                     <input type="password" name="current_password" id="current_password"
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary @error('current_password') border-red-500 @enderror">
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('current_password') border-red-500 @enderror">
                     @error('current_password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -83,7 +83,7 @@
                         Mật khẩu mới
                     </label>
                     <input type="password" name="password" id="password"
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary @error('password') border-red-500 @enderror">
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 @error('password') border-red-500 @enderror">
                     @error('password')
                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                     @enderror
@@ -94,14 +94,14 @@
                         Xác nhận mật khẩu mới
                     </label>
                     <input type="password" name="password_confirmation" id="password_confirmation"
-                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-primary focus:border-primary">
+                           class="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                 </div>
             </div>
 
-            {{-- Nút submit --}}
+            {{-- Nút submit - SỬA MÀU RÕ RÀNG --}}
             <div class="mt-6 flex justify-end">
                 <button type="submit"
-                        class="bg-primary hover:bg-primary-dark text-white font-medium px-6 py-2 rounded-md transition-colors">
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-md transition-colors shadow-sm">
                     Cập nhật thông tin
                 </button>
             </div>
