@@ -39,14 +39,14 @@
                         
                         {{-- Dropdown content đã được sửa lỗi --}}
                         <div class="absolute left-0 top-full w-48 bg-white border border-gray-100 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
-                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Bàn ăn</a>
-                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Ghế Sofa</a>
-                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Tủ quần áo</a>
-                            <a href="#" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">Giường ngủ</a>
+                            <a href="http://127.0.0.1:8000/products?category=ban&min_price=&max_price=&sort=" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Bàn</a>
+                            <a href="http://127.0.0.1:8000/products?category=ghe&min_price=&max_price=&sort=" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Các dòng Ghế</a>
+                            <a href="http://127.0.0.1:8000/products?category=tu-ke&min_price=&max_price=&sort=" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600 border-b border-gray-50">Tủ / Kệ</a>
+                            <a href="http://127.0.0.1:8000/products?category=phong-ngu&min_price=&max_price=&sort=" class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-blue-600">Phòng ngủ</a>
                         </div>
                     </div>
 
-                    <a href="#" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Khuyến mãi</a>
+                    <a href="http://127.0.0.1:8000/products" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Khuyến mãi</a>
                     <a href="#" class="text-gray-700 hover:text-blue-600 font-medium transition-colors">Liên hệ</a>
                 </nav>
 
@@ -193,7 +193,7 @@
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div>
-                    <h3 class="text-white font-semibold text-lg mb-4">FurniShop</h3>
+                    <h1 class="text-white font-semibold text-lg mb-4">FurniShop</h1>
                     <p class="text-sm text-gray-400 leading-relaxed">Nội thất cao cấp, phong cách sống hiện đại. Mang đến không gian sống hoàn hảo cho gia đình bạn.</p>
                 </div>
                 <div>
