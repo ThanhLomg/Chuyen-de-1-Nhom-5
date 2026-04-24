@@ -10,7 +10,6 @@
 <div class="bg-white rounded-lg shadow-sm">
     <div class="p-6 border-b flex flex-wrap justify-between items-center gap-4">
         <h2 class="text-xl font-semibold">Danh sách danh mục</h2>
-        {{-- Nút Thêm danh mục - ĐÃ SỬA MÀU --}}
         <a href="{{ route('admin.categories.create') }}" class="bg-blue-600 hover:bg-blue-700 text-white font-medium px-4 py-2 rounded-md shadow-sm transition-colors">
             + Thêm danh mục
         </a>
@@ -49,7 +48,13 @@
                     </td>
                     <td class="px-6 py-4 text-right space-x-2">
                         <a href="{{ route('admin.categories.edit', $category) }}" class="text-blue-600 hover:underline">Sửa</a>
-                        <button onclick="confirmDelete({{ $category->id }})" class="text-red-600 hover:underline">Xóa</button>
+                        
+                        {{-- SỬA: Dùng onclick để gọi hàm JS cho chắc chắn --}}
+                        <button type="button" 
+                                onclick="confirmDelete({{ $category->id }})" 
+                                class="text-red-600 hover:underline">
+                            Xóa
+                        </button>
                     </td>
                 </tr>
                 @empty
@@ -64,20 +69,32 @@
 </div>
 
 {{-- Modal Xóa --}}
-<div x-data="{ open: false, categoryId: null }" x-show="open" @keydown.escape.window="open = false" class="fixed inset-0 z-50 overflow-y-auto" style="display: none;">
+<div x-data="{ open: false, categoryId: null }" 
+     x-show="open" 
+     @open-delete-modal.window="open = true; categoryId = $event.detail.id"
+     @keydown.escape.window="open = false" 
+     class="fixed inset-0 z-50 overflow-y-auto" 
+     style="display: none;">
+    
     <div class="flex items-center justify-center min-h-screen px-4">
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75" @click="open = false"></div>
-        <div class="bg-white rounded-lg overflow-hidden shadow-xl max-w-md w-full">
+        {{-- Background overlay --}}
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="open = false"></div>
+
+        <div class="bg-white rounded-lg overflow-hidden shadow-xl max-w-md w-full z-50" x-show="open">
             <div class="px-6 pt-5 pb-4">
                 <h3 class="text-lg font-medium text-gray-900">Xác nhận xóa</h3>
                 <p class="mt-2 text-sm text-gray-500">Bạn có chắc muốn xóa danh mục này? Hành động này không thể hoàn tác.</p>
             </div>
             <div class="bg-gray-50 px-6 py-3 flex justify-end">
-                <button @click="open = false" class="bg-white py-2 px-4 border rounded-md text-sm mr-2">Hủy</button>
-                <form :action="'/admin/categories/' + categoryId" method="POST">
+                <button @click="open = false" type="button" class="bg-white py-2 px-4 border rounded-md text-sm mr-2 hover:bg-gray-100">Hủy</button>
+                
+                {{-- Form xóa --}}
+                <form :action="'{{ url('admin/categories') }}/' + categoryId" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md text-sm transition-colors">Xóa</button>
+                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white py-2 px-4 rounded-md text-sm transition-colors">
+                        Xóa vĩnh viễn
+                    </button>
                 </form>
             </div>
         </div>
@@ -85,10 +102,11 @@
 </div>
 
 <script>
-    window.confirmDelete = (id) => {
-        const modal = document.querySelector('[x-data]').__x.$data;
-        modal.open = true;
-        modal.categoryId = id;
+    // Hàm này sẽ phát tín hiệu cho AlpineJS ở Modal nhận
+    function confirmDelete(id) {
+        window.dispatchEvent(new CustomEvent('open-delete-modal', { 
+            detail: { id: id } 
+        }));
     }
 </script>
 @endsection

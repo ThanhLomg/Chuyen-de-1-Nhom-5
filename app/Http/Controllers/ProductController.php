@@ -7,6 +7,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -17,7 +18,7 @@ class ProductController extends Controller
     {
         $query = Product::active()->with('category');
 
-        // Tìm kiếm theo từ khóa
+        // 1. Tìm kiếm theo từ khóa
         if ($request->filled('q')) {
             $q = $request->q;
             $query->where(fn($q2) => $q2->where('name', 'like', "%{$q}%")
@@ -25,47 +26,58 @@ class ProductController extends Controller
                 ->orWhere('short_description', 'like', "%{$q}%"));
         }
 
-        // Lọc theo danh mục
+        // 2. Lọc theo danh mục
         if ($request->filled('category')) {
             $query->whereHas('category', fn($q) => $q->where('slug', $request->category));
         }
 
-        // Lọc theo khoảng giá
+        /**
+         * 3. Lọc theo khoảng giá (ĐÃ FIX)
+         * Sử dụng COALESCE để lấy sale_price nếu có, nếu không lấy price
+         */
         if ($request->filled('min_price')) {
-            $query->where('price', '>=', $request->min_price);
+            $query->whereRaw('COALESCE(sale_price, price) >= ?', [$request->min_price]);
         }
         if ($request->filled('max_price')) {
-            $query->where('price', '<=', $request->max_price);
+            $query->whereRaw('COALESCE(sale_price, price) <= ?', [$request->max_price]);
         }
 
-        // Lọc theo màu sắc (mảng)
+        // 4. Lọc theo màu sắc (mảng)
         if ($request->filled('color')) {
             $colors = (array) $request->color;
             $query->whereIn('color', $colors);
         }
 
-        // Lọc theo chất liệu (mảng)
+        // 5. Lọc theo chất liệu (mảng)
         if ($request->filled('material')) {
             $materials = (array) $request->material;
             $query->whereIn('material', $materials);
         }
 
-        // Chỉ còn hàng
+        // 6. Chỉ còn hàng
         if ($request->filled('in_stock')) {
             $query->where('stock', '>', 0);
         }
 
-        // Sắp xếp
-        $query->when($request->sort, fn($q, $sort) => match($sort) {
-            'price_asc'  => $q->orderBy('price'),
-            'price_desc' => $q->orderByDesc('price'),
-            'name_asc'   => $q->orderBy('name'),
-            'popular'    => $q->orderByDesc('views'),
-            default      => $q->latest(),
+        /**
+         * 7. Sắp xếp (ĐÃ FIX)
+         * Ưu tiên giá sau giảm khi sắp xếp giá tăng/giảm dần
+         */
+        $query->when($request->sort, function($q, $sort) {
+            return match($sort) {
+                'price_asc'  => $q->orderByRaw('COALESCE(sale_price, price) ASC'),
+                'price_desc' => $q->orderByRaw('COALESCE(sale_price, price) DESC'),
+                'name_asc'   => $q->orderBy('name', 'ASC'),
+                'popular'    => $q->orderByDesc('views'),
+                default      => $q->latest(),
+            };
         }, fn($q) => $q->latest());
 
+        // Lấy dữ liệu cho sidebar và phân trang
         $products   = $query->paginate(12)->withQueryString();
         $categories = Category::active()->withCount('products')->get();
+        
+        // Lấy danh sách màu và chất liệu để hiển thị bộ lọc
         $colors     = Product::active()->distinct()->pluck('color')->filter()->sort()->values();
         $materials  = Product::active()->distinct()->pluck('material')->filter()->sort()->values();
 
@@ -83,7 +95,8 @@ class ProductController extends Controller
         $product->increment('views');
         
         // Sản phẩm liên quan (cùng danh mục, loại trừ sản phẩm hiện tại, còn hàng)
-        $related = Product::active()->inStock()
+        $related = Product::active()
+            ->where('stock', '>', 0)
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
             ->take(4)
@@ -103,7 +116,8 @@ class ProductController extends Controller
             return response()->json([]);
         }
         
-        $results = Product::active()->inStock()
+        $results = Product::active()
+            ->where('stock', '>', 0)
             ->where('name', 'like', '%' . $q . '%')
             ->select('id', 'name', 'slug', 'image', 'price', 'sale_price')
             ->take(6)

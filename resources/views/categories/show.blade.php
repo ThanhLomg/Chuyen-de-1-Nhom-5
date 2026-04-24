@@ -93,18 +93,16 @@
 
         {{-- Danh sách sản phẩm --}}
         <div class="lg:w-3/4">
-            <div class="flex justify-between items-center mb-6">
-                <p class="text-gray-600">
-                    <span class="font-medium">{{ $products->total() }}</span> sản phẩm
-                </p>
-                <select name="sort" form="filter-form" class="border-gray-200 rounded-lg text-sm focus:ring-blue-500 focus:border-blue-500">
-                    <option value="">Mới nhất</option>
-                    <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá tăng dần</option>
-                    <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Giá giảm dần</option>
-                    <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Tên A-Z</option>
-                    <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Phổ biến</option>
-                </select>
-            </div>
+            <div class="flex items-center gap-2">
+                    <label class="text-sm text-gray-600">Sắp xếp:</label>
+                    <select name="sort" onchange="this.form.submit()" form="filter-form" class="border-gray-200 rounded-lg text-sm focus:ring-primary focus:border-primary">
+                        <option value="">Mới nhất</option>
+                        <option value="price_asc" {{ request('sort') == 'price_asc' ? 'selected' : '' }}>Giá: Thấp đến Cao</option>
+                        <option value="price_desc" {{ request('sort') == 'price_desc' ? 'selected' : '' }}>Giá: Cao đến Thấp</option>
+                        <option value="name_asc" {{ request('sort') == 'name_asc' ? 'selected' : '' }}>Tên A-Z</option>
+                        <option value="popular" {{ request('sort') == 'popular' ? 'selected' : '' }}>Phổ biến nhất</option>
+                    </select>
+                </div>
 
             @if($products->isEmpty())
                 <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
